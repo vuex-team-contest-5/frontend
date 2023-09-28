@@ -29,8 +29,8 @@ onMounted(async () => {
       <SearchInput />
       <AddButton @click="toggleAddForm" />
     </div>
-    <!-- <Loading v-if="teacher_store.LOAD" /> -->
-    <div class="">
+    <Loading v-if="teacher_store.LOAD" />
+    <div v-else class="">
       <h3 v-if="!teacher_store.DATA.length" class="text-5xl w-full text-center py-20 text-gray-400">
         Hali ma'lumot qo'shilmagan 🤷‍♂️
       </h3>

@@ -4,6 +4,7 @@ import { useTeacher } from '@/service/teacher'
 
 export const useTeacherStore = defineStore('teacher', () => {
   const teachers = reactive({
+    meta: [],
     data: [
       {
         fullName: 'Toshmatov Eshmat',
@@ -34,10 +35,9 @@ export const useTeacherStore = defineStore('teacher', () => {
   const DELETE = async () => {}
 
   const GET = async () => {
-    console.log(teachers.data)
-    // teachers.data = (await useTeacher.list()).data
-    // console.log(teachers.data)
-    // teachers.load = false
+    teachers.data = (await useTeacher.list()).data.data
+    teachers.meta = (await useTeacher.list()).data.data
+    teachers.load = false
   }
 
   const GETONE = async () => {}
