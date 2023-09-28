@@ -37,10 +37,6 @@ const getFile = (e) => {
         <Message v-for="el in chats_store.DATA" :data="el" />
       </div>
       <div class="relative h-[10vh] pt-3">
-        <textarea
-          type="text"
-          class="h-full w-full rounded-xl shadow outline-none px-3 border border-[#4D44B5]/50 py-3 focus:shadow-2xl"
-        />
         <div
           v-if="selectedFileUrl"
           class="bg-white rounded-xl w-full absolute bottom-14 border border-[#4D44B5]/50 p-2 flex items-center"
@@ -59,14 +55,18 @@ const getFile = (e) => {
             </button>
           </div>
         </div>
-        <button class="absolute right-32 bottom-3 text-3xl flex items-start justify-center">
+        <textarea
+          type="text"
+          class="h-[10vh] w-full rounded-xl shadow outline-none px-3 border border-[#4D44B5]/50 py-3 focus:shadow-2xl"
+        />
+        <button class="absolute right-32 bottom-1 text-3xl flex items-start justify-center">
           <label for="file" class="flex items-center justify-center cursor-pointer">
             <i class="bx bx-paperclip -rotate-45 text-gray-500"></i>
           </label>
           <input type="file" @change="(e) => getFile(e)" id="file" class="hidden" />
         </button>
         <button
-          class="absolute right-5 bottom-2 p-2 px-5 rounded-full text-white flex items-center justify-center gap-2 bg-[#4D44B5] hover:bg-[#4D44B5]/90"
+          class="absolute right-5 bottom-0 p-2 px-5 rounded-full text-white flex items-center justify-center gap-2 bg-[#4D44B5] hover:bg-[#4D44B5]/90"
         >
           Send <i class="bx bx-send"></i>
         </button>
