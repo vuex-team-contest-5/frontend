@@ -1,10 +1,74 @@
 <script setup>
 defineProps(['funcForm'])
+import { reactive } from 'vue'
+import { toast } from 'vue3-toastify'
+import { useTeacherStore } from '@/stores/teachers/teacher'
+import { week } from '@/helpers/formatDays'
+
+const store_teacher = useTeacherStore()
+const newUser = reactive({
+  image: '',
+  fullName: '',
+  phoneNumber: '',
+  email: '',
+  password: '',
+  birthDate: '',
+  workDay: [],
+  info: '',
+  isMale: '',
+  status: true,
+  typeId: ''
+})
+
+const addWorkDay = (e) => {
+  newUser.workDay.push(e.target.value)
+}
+
+const fileSelected = (e) => {
+  newUser.image = e.target.files[0]
+  console.log(e)
+}
+
+const createUser = async () => {
+  try {
+    newUser.password = newUser.phoneNumber
+    newUser.workDay = newUser.workDay.join(', ')
+    console.log(newUser)
+    for (let i in newUser) {
+      console.log(newUser[i])
+      if (!newUser[i]) {
+        toast.error(`Formalarni to'liq kiriting`, { autoClose: 1000 })
+        return
+      }
+    }
+    if (newUser.fullName.split(' ').length < 2) {
+      toast.error(`Ismingizni to'liq  kiriting`, { autoClose: 1000 })
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('image', selectedFile)
+    formData.append('fullName', newUser.fullName)
+    formData.append('birthDate', newUser.birthDate)
+    formData.append('birthDate', newUser.birthDate)
+    formData.append('birthDate', newUser.birthDate)
+    formData.append('birthDate', newUser.birthDate)
+
+    // Send the FormData with Axios or your store action
+    await store_teacher.CREATE(formData)
+    await store_teacher.CREATE(newUser)
+
+    toast.success(`Muvaffaqiyatli tizimga kirdingiz`, { autoClose: 1000 })
+  } catch (error) {
+    console.log(error)
+    toast.error(`Bunday o'quvchi topilmadi`, { autoClose: 1000 })
+  }
+}
 </script>
 
 <template>
   <div class="fixed top-0 left-0 w-full h-full bg-black/50 z-50 overflow-y-auto">
-    <div class="mx-auto mt-5 lg:w-3/5 md:w-5/6 w-[98%] bg-white rounded-xl">
+    <div class="mx-auto my-5 lg:w-3/5 md:w-5/6 w-[98%] bg-white rounded-xl">
       <div
         class="bg-[#4D44B5] w-full px-10 p-5 font-semibold flex items-center justify-between rounded-t-xl"
       >
@@ -21,10 +85,10 @@ defineProps(['funcForm'])
             >
             <input
               type="text"
-              id="last_name"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-              placeholder="Maria"
+              class="bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+              placeholder="Toshmat Eshmatov"
               required
+              v-model="newUser.fullName"
             />
           </div>
           <div class="w-1/2">
@@ -33,9 +97,9 @@ defineProps(['funcForm'])
             >
             <input
               type="date"
-              id="birthday"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+              class="bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               required
+              v-model="newUser.birthDate"
             />
           </div>
         </div>
@@ -45,11 +109,11 @@ defineProps(['funcForm'])
               >Telefon raqami *</label
             >
             <input
-              type="text"
-              id="last_name"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+              type="number"
+              class="bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="+998941234567"
               required
+              v-model="newUser.phoneNumber"
             />
           </div>
           <div class="w-1/2">
@@ -57,8 +121,7 @@ defineProps(['funcForm'])
               Toifa *
             </label>
             <select
-              id="countries"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 outline-none"
+              class="bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 outline-none"
             >
               <option value="I">I</option>
               <option value="II">II</option>
@@ -74,10 +137,10 @@ defineProps(['funcForm'])
               >Ma'lumot *</label
             >
             <textarea
-              id="last_name"
-              class="h-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+              class="h-40 bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="Qisqacha ma'lumot"
               required
+              v-model="newUser.info"
             />
           </div>
           <div class="w-1/2">
@@ -87,8 +150,8 @@ defineProps(['funcForm'])
 
             <div class="flex items-center justify-center w-full">
               <label
-                for="dropzone-file"
-                class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
+                for="file"
+                class="flex flex-col items-center justify-center w-full h-40 border-2 border-[#4D44B5] border-dashed rounded-lg cursor-pointer bg-gray-50"
               >
                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
                   <i class="bx bx-cloud-upload"></i>
@@ -99,8 +162,8 @@ defineProps(['funcForm'])
                     SVG, PNG, JPG or GIF (MAX. 1MB)
                   </p>
                 </div>
-                <input id="dropzone-file" type="file" class="hidden" />
               </label>
+              <input id="file" type="file" class="hidden" @change="fileSelected" />
             </div>
           </div>
         </div>
@@ -111,10 +174,10 @@ defineProps(['funcForm'])
             >
             <input
               type="text"
-              id="last_name"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+              class="bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="demo@gmail.com"
               required
+              v-model="newUser.email"
             />
           </div>
           <div class="w-1/2">
@@ -122,21 +185,47 @@ defineProps(['funcForm'])
               Jinsi *
             </label>
             <select
-              id="countries"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 outline-none"
+              class="bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 outline-none"
+              v-model="newUser.isMale"
             >
-              <option class="male">Erkak</option>
-              <option class="female">Ayol</option>
+              <option selected class="true">Erkak</option>
+              <option class="false">Ayol</option>
             </select>
           </div>
         </div>
+
+        <h3 class="block mb-2 text-sm font-medium text-gray-900">Ishlash kunlari</h3>
+        <ul
+          class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-[#4D44B5] mb-5 rounded-lg sm:flex"
+        >
+          <li
+            v-for="day in week"
+            class="cursor-pointer w-full border-b border-[#4D44B5] sm:border-b-0 sm:border-r"
+          >
+            <div class="cursor-pointer flex items-center pl-3">
+              <input
+                :id="day"
+                type="checkbox"
+                value=""
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-[#4D44B5] rounded focus:ring-blue-500"
+              />
+              <label :for="day" class="w-full py-3 ml-2 text-sm font-medium text-gray-900">
+                {{ day }}
+              </label>
+            </div>
+          </li>
+        </ul>
+
         <div class="flex items-center justify-end gap-5">
           <button
             class="border text-sm text-[#4D44B5] border-[#4D44B5] p-2 px-4 rounded-full shadow-xl"
           >
             Saqlash
           </button>
-          <button class="border bg-[#4D44B5] text-white p-2 px-4 rounded-full shadow-xl text-sm">
+          <button
+            class="border bg-[#4D44B5] text-white p-2 px-4 rounded-full shadow-xl text-sm"
+            @click="createUser"
+          >
             Qo'shish
           </button>
         </div>

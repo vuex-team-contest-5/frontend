@@ -1,5 +1,20 @@
 <script setup>
 defineProps(['funcForm'])
+import { reactive } from 'vue'
+
+const newUser = reactive({
+  image: '',
+  fullName: '',
+  phoneNumber: '',
+  email: '',
+  password: '',
+  birthDate: '',
+  servicePrice: '',
+  startedAt: '',
+  period: '',
+  status: '',
+  teacherId: ''
+})
 </script>
 
 <template>
@@ -25,6 +40,7 @@ defineProps(['funcForm'])
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="Maria"
               required
+              v-model="newUser.fullName"
             />
           </div>
           <div class="w-1/2">
@@ -36,6 +52,7 @@ defineProps(['funcForm'])
               id="birthday"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               required
+              v-model="newUser.birthDate"
             />
           </div>
         </div>
@@ -50,6 +67,7 @@ defineProps(['funcForm'])
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="+998941234567"
               required
+              v-model="newUser.phoneNumber"
             />
           </div>
           <div class="w-1/2">
@@ -86,6 +104,7 @@ defineProps(['funcForm'])
                 </div>
                 <input id="dropzone-file" type="file" class="hidden" />
               </label>
+              <input id="file" type="file" class="hidden" @change="fileSelected" />
             </div>
           </div>
           <div class="w-1/2">
@@ -99,6 +118,7 @@ defineProps(['funcForm'])
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
                 placeholder="demo@gmail.com"
                 required
+                v-model="newUser.email"
               />
             </div>
             <div class="w-full">

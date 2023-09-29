@@ -26,8 +26,10 @@ export const useTeacherStore = defineStore('teacher', () => {
     load: true
   })
 
-  const CREATE = (newData) => {
-    // teachers.data.push(newData)
+  const CREATE = async (newData) => {
+    await useTeacher.list()
+    await useTeacher.create(newData)
+    await GET()
   }
 
   const UPDATE = async () => {}

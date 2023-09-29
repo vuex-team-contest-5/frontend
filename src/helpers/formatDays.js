@@ -1,4 +1,4 @@
-const week = {
+export const week = {
   Dushanba: 'Du',
   Seshanba: 'Se',
   Chorshanba: 'Cho',

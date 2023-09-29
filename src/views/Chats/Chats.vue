@@ -59,9 +59,15 @@ const getFile = (e) => {
           type="text"
           class="h-[10vh] w-full rounded-xl shadow outline-none px-3 border border-[#4D44B5]/50 py-3 focus:shadow-2xl"
         />
-        <button class="absolute right-32 bottom-1 text-3xl flex items-start justify-center">
+        <div class="absolute right-44 bottom-0">
+          <div
+            class="absolute bottom-16 shadow-xl rounded-xl border border-[#4D44B5]/80 -right-0 bg-white w-64 h-64"
+          ></div>
+          <i class="bx bx-smile text-3xl text-[#4D44B5]"></i>
+        </div>
+        <button class="absolute right-[135px] bottom-1 text-3xl flex items-start justify-center">
           <label for="file" class="flex items-center justify-center cursor-pointer">
-            <i class="bx bx-paperclip -rotate-45 text-gray-500"></i>
+            <i class="bx bx-paperclip -rotate-45 text-[#4D44B5]"></i>
           </label>
           <input type="file" @change="(e) => getFile(e)" id="file" class="hidden" />
         </button>
