@@ -29,7 +29,6 @@ const useLogin = () => {
 </script>
 
 <template>
-  {{ user }}
   <div class="flex items-center justify-normal">
     <LoginRight />
     <div class="flex items-center justify-center text-center bg-white h-screen w-1/2">
