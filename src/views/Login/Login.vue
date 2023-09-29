@@ -1,41 +1,35 @@
 <script setup>
 import LoginRight from '@/views/Login/LoginRight.vue'
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 import { toast } from 'vue3-toastify'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../../stores/auth/auth'
+
+const auth_store = useAuthStore()
 
 const user = reactive({
   email: '',
-  password: ''
+  phoneNumber: ''
 })
 const router = useRouter()
 
-// const useLogin = () => {
-//   const senUser = {
-//     login: user.login,
-//     password: user.password
-//   }
-//   useAuth
-//     .LOGIN(senUser)
-//     .then((res) => {
-//       localStorage.setItem('token', res?.data?.tokens.access_token)
-//       router.push('/')
-//       toast.success('Successfully Logged in', {
-//         autoClose: 1000,
-//         theme: 'light'
-//       })
-//     })
-//     .catch((err) => {
-//       console.log(err)
-//       toast.error(`Error`, {
-//         autoClose: 1000,
-//         theme: 'auto'
-//       })
-//     })
-// }
+const useLogin = () => {
+  auth_store
+    .LOGIN(user)
+    .then((res) => {
+      console.log(res)
+      localStorage.setItem('ownerId', res.data.ownerId)
+      router.push('/verification')
+    })
+    .catch((err) => {
+      console.log(err)
+      toast.error(`Error`, { autoClose: 1000 })
+    })
+}
 </script>
 
 <template>
+  {{ user }}
   <div class="flex items-center justify-normal">
     <LoginRight />
     <div class="flex items-center justify-center text-center bg-white h-screen w-1/2">
@@ -57,20 +51,22 @@ const router = useRouter()
           />
         </div>
         <div class="mb-5">
-          <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900"
-            >Password</label
-          >
+          <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">
+            Phone Number
+          </label>
           <input
             type="password"
             id="password"
             class="bg-[#EAEAEA] border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5 px-4 shadow"
             placeholder="Type your password "
-            v-model="user.email"
+            v-model="user.phoneNumber"
             required
           />
         </div>
         <button class="block text-[#66BCE8] mb-5 text-sm hover:underline">Forgot Pasword?</button>
-        <button class="bg-[#4C70FF] w-full p-2 text-white rounded-md">Log In</button>
+        <button @click="useLogin" class="bg-[#4C70FF] w-full p-2 text-white rounded-md">
+          Log In
+        </button>
       </div>
     </div>
   </div>
