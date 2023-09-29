@@ -21,7 +21,8 @@ const useVerify = () => {
     .then((res) => {
       console.log(res)
       localStorage.removeItem('ownerId')
-      localStorage.removeItem('ownerId')
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('role', res.data.role)
       router.push('/')
       toast.success(`You are logged in`, { autoClose: 1000 })
     })
