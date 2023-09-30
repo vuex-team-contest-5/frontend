@@ -5,6 +5,8 @@ import SearchInput from '@/components/SearchInput.vue'
 
 const rightbar = useRightbarStore()
 const route = useRoute()
+
+const { user } = defineProps(['user'])
 </script>
 
 <template>
@@ -35,8 +37,12 @@ const route = useRoute()
             </div>
             <div class="hidden md:flex cursor-pointer items-center justify-center gap-3">
               <div class="text-center sm:hidden lg:block">
-                <h3 class="text-[#303972] font-[600] text-[14px]">Ochilov .M</h3>
-                <h4 class="text-[#A098AE] font-[400] text-[14px]">Admin</h4>
+                <h3 class="text-[#303972] font-[600] text-[14px]">
+                  {{ user ? `${user?.lastName} ${user?.firstName?.at(0)}.` : 'Ochilov M.' }}
+                </h3>
+                <h4 class="text-[#A098AE] font-[400] text-[14px]">
+                  {{ user ? (user?.role == 'admin' ? 'Admin' : 'Client') : 'User' }}
+                </h4>
               </div>
               <img
                 class="h-14 w-14 rounded-full object-cover border border-[#303972]"

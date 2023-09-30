@@ -1,4 +1,10 @@
-<script setup></script>
+<script setup>
+const search = (event) => {
+  emits('search', event.target.value)
+}
+
+const emits = defineEmits(['search'])
+</script>
 
 <template>
   <div class="relative">
@@ -8,6 +14,7 @@
       <i class="bx bx-search text-2xl text-[#4D44B5]"></i>
     </div>
     <input
+      @change="search"
       type="search"
       class="block w-[260px] p-3 pl-12 text-sm text-gray-900 border rounded-full bg-white outline-none focus:shadow"
       placeholder="Izlash"

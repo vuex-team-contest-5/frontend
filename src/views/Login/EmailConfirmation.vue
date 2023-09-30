@@ -9,7 +9,7 @@ const auth_store = useAuthStore()
 
 const code = ref(null)
 const router = useRouter()
-const timer = reactive({ min: 1, sec: 0 })
+const timer = reactive({ min: 2, sec: 0 })
 
 const useVerify = () => {
   const sended = {
@@ -65,7 +65,8 @@ onMounted(() => {
           </div>
         </div>
         <p class="text-md font-[400] mb-5 text-center">
-          Enter the verification code we sent to <span class="text-[#4C70FF]">demo@gmail.com</span>
+          Enter the verification code we sent to
+          <span class="text-[#4C70FF]">{{ auth_store.GET_EMAIL }}</span>
         </p>
 
         <div class="mb-5">

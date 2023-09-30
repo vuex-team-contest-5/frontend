@@ -5,7 +5,7 @@ import SearchInput from '@/components/SearchInput.vue'
 import Loading from '@/components/Loading.vue'
 import AddButton from '@/components/Buttons/AddButton.vue'
 import Pagination from '@/components/Pagination.vue'
-import AddClientForm from '@/components/AddClientForm.vue'
+// import AddClientForm from '@/components/AddClientForm.vue'
 import { useTeacherStore } from '@/stores/teachers/teacher'
 
 const teacher_store = useTeacherStore()
@@ -22,7 +22,7 @@ onMounted(async () => {
 
 <template>
   <div class="p-5">
-    <AddClientForm v-if="isAddForm" :funcForm="toggleAddForm" />
+    <!-- <AddClientForm v-if="isAddForm" :funcForm="toggleAddForm" /> -->
     <DeleteForm v-if="deleteId" :funcForm="toggleAddForm" />
     <div class="flex items-center justify-between mb-5">
       <SearchInput />

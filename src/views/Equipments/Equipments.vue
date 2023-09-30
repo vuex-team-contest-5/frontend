@@ -1,68 +1,43 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 import SearchInput from '@/components/SearchInput.vue'
 import Loading from '@/components/Loading.vue'
 import AddButton from '@/components/Buttons/AddButton.vue'
-import ProductCards from '@/components/Product/ProductCards.vue'
-import CirclePagination from '@/components/CirclePagination.vue'
-import DeleteForm from '@/components/DeleteForm.vue'
-import AddProductForm from '@/components/Product/AddProductForm.vue'
-import ProductInfo from '@/components/Product/ProductInfo.vue'
-import { useProductStore } from '@/stores/product/product'
+import EquipmentsCards from '@/components/EquipmentsCards.vue'
+import AddEquipmentForm from '@/components/AddEquipmentForm.vue'
+import { useEquipmentsStore } from '@/stores/equipments/equipments'
 
-const product_store = useProductStore()
+const teacher_store = useEquipmentsStore()
 const isAddForm = ref(false)
 const deleteId = ref(null)
 const infoId = ref(null)
 const editId = ref(null)
 
 const toggleAddForm = () => (isAddForm.value = !isAddForm.value)
-const setDeleteId = (id = null) => {
-  console.log(id)
-  deleteId.value = id
-}
-const setInfoId = (id = null) => (infoId.value = id)
-const setEditId = (id = null) => (editId.value = id)
-const deleteFunc = async () => {
-  await product_store.DELETE(deleteId.value, 'equipment')
-  deleteId.value = null
-  infoId.value = null
-  editId.value = null
-}
+const setDeleteId = (id) => (deleteId.value = id)
 
 onMounted(async () => {
-  await product_store.GET('equipment')
+  await teacher_store.GET()
 })
 </script>
 
 <template>
   <div class="p-5">
-    <AddProductForm v-if="isAddForm" :funcForm="toggleAddForm" />
-    <DeleteForm v-if="deleteId" :setDeleteId="setDeleteId" :deleteFunc="deleteFunc" />
-    <ProductInfo
-      v-if="infoId"
-      :funcForm="setInfoId"
-      :data="product_store.GETONE(infoId)"
-      :setDeleteId="setDeleteId"
-    />
-
+    <AddEquipmentForm v-if="isAddForm" :funcForm="toggleAddForm" />
+    <DeleteForm v-if="deleteId" :funcForm="toggleAddForm" />
     <div class="flex items-center justify-between mb-5">
-      <SearchInput />
-      <AddButton @click="toggleAddForm" />
+      <SearchInput @search="search" />
+      <AddButton v-if="auth_store.GET_ROLE == 'admin'" @click="toggleAddForm" />
     </div>
-    <Loading v-if="product_store.LOAD" />
-    <div v-else class="w-full">
-      <h3 v-if="!product_store.DATA.length" class="text-5xl w-full text-center py-20 text-gray-400">
+    <!-- <Loading v-if="teacher_store.LOAD" /> -->
+    <div class="">
+      <h3 v-if="!teacher_store.DATA.length" class="text-5xl w-full text-center py-20 text-gray-400">
         Hali ma'lumot qo'shilmagan 🤷‍♂️
       </h3>
       <div v-else class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-5">
-        <ProductCards
-          v-for="el in product_store.DATA"
-          :data="el"
-          :setDeleteId="setDeleteId"
-          :setInfoId="setInfoId"
-        />
+        <EquipmentsCards v-for="el in teacher_store.DATA" :data="el" :deleteFunc="setDeleteid" />
+        <Pagination />
       </div>
       <CirclePagination :data="product_store.DATA" :meta="product_store.META" />
     </div>
