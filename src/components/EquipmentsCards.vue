@@ -1,8 +1,12 @@
 <script setup>
-defineProps(['deleteFunc', 'data'])
 import { ref } from 'vue'
+import { useAuthStore } from '../stores/auth/auth'
+
+const { deleteFunc, data } = defineProps(['deleteFunc', 'data'])
 
 const infoId = ref(null)
+
+const auth_store = useAuthStore()
 </script>
 
 <template>
@@ -10,10 +14,14 @@ const infoId = ref(null)
     class="cursor-pointer hover:shadow-xl duration-300 bg-[#4D44B5]/30 rounded-xl relative text-center py-5 px-3"
   >
     <div class="relative bg-white mb-5 rounded-xl border border-[#4D44B5] pt-7">
-      <button class="text-gray-500 text-xl absolute top-1 right-10">
+      <button
+        v-if="auth_store.GET_ROLE == 'admin'"
+        class="text-gray-500 text-xl absolute top-1 right-10"
+      >
         <i class="bx bx-pencil"></i>
       </button>
       <button
+        v-if="auth_store.GET_ROLE == 'admin'"
         @click="() => deleteFunc(data.id)"
         class="text-gray-500 text-xl absolute top-1 right-1"
       >
