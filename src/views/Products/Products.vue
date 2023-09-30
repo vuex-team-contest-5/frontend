@@ -8,8 +8,8 @@ import ProductsCards from '@/components/ProductsCards.vue'
 import AddEquipmentForm from '@/components/AddEquipmentForm.vue'
 import DeleteForm from '@/components/DeleteForm.vue'
 import Pagination from '@/components/Pagination.vue'
-import { useProductsStore } from '../../stores/products/products'
-import { useAuthStore } from '../../stores/auth/auth'
+import { useProductsStore } from '@/stores/products/products'
+import { useAuthStore } from '@/stores/auth/auth'
 
 const products_store = useProductsStore()
 const auth_store = useAuthStore()
