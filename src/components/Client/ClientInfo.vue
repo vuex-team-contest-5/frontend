@@ -1,5 +1,5 @@
 <script setup>
-defineProps(['data', 'funcForm', 'setDeleteFunc'])
+defineProps(['data', 'funcForm', 'setDeleteId'])
 import { main_URL } from '@/service/axios'
 import { formatDays } from '@/helpers/formatDays'
 import Iconlik from '@/components/Iconlik.vue'

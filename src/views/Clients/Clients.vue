@@ -80,7 +80,7 @@ onMounted(async () => {
                 <img
                   :src="
                     el.imageName
-                      ? `${main_URL}/image/${data.imageName}`
+                      ? `${main_URL}/image/${el.imageName}`
                       : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnbhk5N2f5z5F3ubhn6aWM4TUzxceKsa0RIg&usqp=CAU'
                   "
                   class="h-14 w-14 rounded-full border"
