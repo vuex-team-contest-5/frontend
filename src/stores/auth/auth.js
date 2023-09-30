@@ -1,6 +1,8 @@
 import { ref, reactive, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuth } from '@/service/auth'
+import { useClient } from '@/service/client'
+import { useAdmin } from '@/service/admin'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = reactive({
@@ -26,6 +28,16 @@ export const useAuthStore = defineStore('auth', () => {
     return res
   }
 
+  const GET_COUNT_INFO = async () => {
+    return useAuth.get_count_info()
+  }
+
+  const GET_USER_INFO = async (id) => {
+    return localStorage.getItem('role') === 'client'
+      ? await useClient.get_one(id)
+      : await useAdmin.get_one(id)
+  }
+
   const GET = async () => {}
 
   const DATA = computed(() => chats.data)
@@ -36,5 +48,5 @@ export const useAuthStore = defineStore('auth', () => {
 
   const GET_TOKEN = computed(() => user.token || localStorage.getItem('token'))
 
-  return { LOGIN, GET, VERIFY, DATA, GET_EMAIL, GET_ROLE, GET_TOKEN }
+  return { LOGIN, GET, VERIFY, DATA, GET_EMAIL, GET_ROLE, GET_TOKEN, GET_COUNT_INFO, GET_USER_INFO }
 })

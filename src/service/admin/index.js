@@ -1,18 +1,18 @@
 import axios from '../axios'
 
-export const useClient = {
-  list: async (limit, page) => await axios.get(`/client?limit=${limit}&page=${page}`),
-  get_one: async (id) => await axios.get(`/client/${id}`),
+export const useAdmin = {
+  list: async (limit, page) => await axios.get(`/admin?limit=${limit}&page=${page}`),
+  get_one: async (id) => await axios.get(`/admin/${id}`),
   create: async (state) =>
-    await axios.post('/client', state, {
+    await axios.post('/admin', state, {
       headers: { 'Content-Type': 'multipart/form-data' }
     }),
   update: async (id, state) =>
-    await axios.put(`/client/${id}`, state, {
+    await axios.put(`/admin/${id}`, state, {
       headers: { 'Content-Type': 'multipart/form-data' }
     }),
   delete: async (id) =>
-    await axios.put(`/client/${id}`, {
+    await axios.put(`/admin/${id}`, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
