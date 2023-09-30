@@ -1,6 +1,7 @@
 import { ref, reactive, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useClient } from '@/service/client'
+import { useChat } from '@/service/chat'
 
 export const useClientStore = defineStore('client', () => {
   const clients = reactive({
@@ -20,7 +21,8 @@ export const useClientStore = defineStore('client', () => {
   }
 
   const CREATE = async (newData) => {
-    await useClient.create(newData)
+    const res = await useClient.create(newData)
+    await useChat.create({ clientId: res.id, status: true })
     await GET()
   }
 

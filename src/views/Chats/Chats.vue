@@ -33,60 +33,65 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex gap-5 p-5">
-    <div class="w-80 max-h-[82vh] overflow-y-auto p-2">
-      <Loading v-if="chats_store.LOAD" />
-      <div v-else class="">
-        <h3 v-if="!chats_store.DATA.length" class="text-xl w-full text-center py-20 text-gray-400">
-          Hali chat yo'q 🤷‍♂️
-        </h3>
-        <ChatAvatar v-for="el in chats_store.DATA" />
+  {{ chats_store.DATA }}
+  <Loading v-if="chats_store.LOAD" />
+  <div v-else class="">
+    <h3 v-if="!chats_store.DATA.length" class="text-xl w-full text-center py-20 text-gray-400">
+      Hali chat yo'q 🤷‍♂️
+    </h3>
+    <div v-else class="flex gap-5 p-5">
+      <div class="w-80 max-h-[82vh] overflow-y-auto p-2">
+        <div class="">
+          <ChatAvatar v-for="el in chats_store.DATA" />
+        </div>
       </div>
-    </div>
-    <div class="w-2/3 h-[80vh]">
-      <div class="bg-[#EAECF0] border border-[#4D44B5]/50 rounded-xl overflow-y-auto h-[70vh] p-5">
-        <Message v-for="el in chats_store.DATA" :data="el" />
-      </div>
-      <div class="relative h-[10vh] pt-3">
+      <div class="w-2/3 h-[80vh]">
         <div
-          v-if="selectedFileUrl"
-          class="bg-white rounded-xl w-full absolute bottom-14 border border-[#4D44B5]/50 p-2 flex items-center"
+          class="bg-[#EAECF0] border border-[#4D44B5]/50 rounded-xl overflow-y-auto h-[70vh] p-5"
         >
-          <div class="relative">
-            <img
-              :src="selectedFileUrl"
-              class="h-40 object-cover rounded-lg border border-[#4D44B5]/50"
-              alt=""
-            />
-            <button
-              @click="resetImages"
-              class="bg-black/50 hover:bg-black/80 h-8 w-8 flex items-center justify-center rounded-full text-white top-1 right-2 absolute"
-            >
-              <i class="bx bx-x text-2xl"></i>
-            </button>
-          </div>
+          <Message v-for="el in chats_store.DATA" :data="el" />
         </div>
-        <textarea
-          type="text"
-          class="h-[10vh] w-full rounded-xl shadow outline-none px-3 border border-[#4D44B5]/50 py-3 focus:shadow-2xl"
-        />
-        <div class="absolute right-44 bottom-0">
+        <div class="relative h-[10vh] pt-3">
           <div
-            class="hidden absolute bottom-16 shadow-xl rounded-xl border border-[#4D44B5]/80 -right-0 bg-white w-64 h-64"
-          ></div>
-          <i class="bx bx-smile text-3xl text-[#4D44B5]"></i>
+            v-if="selectedFileUrl"
+            class="bg-white rounded-xl w-full absolute bottom-14 border border-[#4D44B5]/50 p-2 flex items-center"
+          >
+            <div class="relative">
+              <img
+                :src="selectedFileUrl"
+                class="h-40 object-cover rounded-lg border border-[#4D44B5]/50"
+                alt=""
+              />
+              <button
+                @click="resetImages"
+                class="bg-black/50 hover:bg-black/80 h-8 w-8 flex items-center justify-center rounded-full text-white top-1 right-2 absolute"
+              >
+                <i class="bx bx-x text-2xl"></i>
+              </button>
+            </div>
+          </div>
+          <textarea
+            type="text"
+            class="h-[10vh] w-full rounded-xl shadow outline-none px-3 border border-[#4D44B5]/50 py-3 focus:shadow-2xl"
+          />
+          <div class="absolute right-44 bottom-0">
+            <div
+              class="hidden absolute bottom-16 shadow-xl rounded-xl border border-[#4D44B5]/80 -right-0 bg-white w-64 h-64"
+            ></div>
+            <i class="bx bx-smile text-3xl text-[#4D44B5]"></i>
+          </div>
+          <button class="absolute right-[135px] bottom-1 text-3xl flex items-start justify-center">
+            <label for="file" class="flex items-center justify-center cursor-pointer">
+              <i class="bx bx-paperclip -rotate-45 text-[#4D44B5]"></i>
+            </label>
+            <input type="file" @change="(e) => getFile(e)" id="file" class="hidden" />
+          </button>
+          <button
+            class="absolute right-5 bottom-0 p-2 px-5 rounded-full text-white flex items-center justify-center gap-2 bg-[#4D44B5] hover:bg-[#4D44B5]/90"
+          >
+            Send <i class="bx bx-send"></i>
+          </button>
         </div>
-        <button class="absolute right-[135px] bottom-1 text-3xl flex items-start justify-center">
-          <label for="file" class="flex items-center justify-center cursor-pointer">
-            <i class="bx bx-paperclip -rotate-45 text-[#4D44B5]"></i>
-          </label>
-          <input type="file" @change="(e) => getFile(e)" id="file" class="hidden" />
-        </button>
-        <button
-          class="absolute right-5 bottom-0 p-2 px-5 rounded-full text-white flex items-center justify-center gap-2 bg-[#4D44B5] hover:bg-[#4D44B5]/90"
-        >
-          Send <i class="bx bx-send"></i>
-        </button>
       </div>
     </div>
   </div>
