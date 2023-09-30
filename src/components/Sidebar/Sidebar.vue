@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { navLinks } from '../../constants/navLink'
+import { useAuthStore } from '../../stores/auth/auth'
+
+const auth_store = useAuthStore()
 
 const navlink = ref(navLinks)
 </script>
@@ -20,7 +23,12 @@ const navlink = ref(navLinks)
           <img class="mx-auto md:h-28 sm:h-20 object-cover" src="@/assets/img/logo.png" alt="" />
         </div>
         <ul class="space-y-2 font-medium">
-          <li v-for="link in navLinks" :key="link.id">
+          <li
+            v-for="link in navLinks.filter((navLink) =>
+              navLink.roles.includes(auth_store.GET_ROLE)
+            )"
+            :key="link.id"
+          >
             <router-link
               :to="link.link"
               class="flex items-center p-2.5 px-5 text-[#d8edf7] rounded-l-full hover:text-[#4d44b5] hover:bg-[#d8edf7] duration-200"
