@@ -4,7 +4,7 @@ import { useChat } from '@/service/chat'
 
 export const useChatStore = defineStore('chat', () => {
   const chats = reactive({
-    meta: { limit: 4, currentPage: 1 },
+    meta: { limit: 1000, currentPage: 1 },
     data: [],
     load: true
   })

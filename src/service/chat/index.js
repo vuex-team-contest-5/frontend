@@ -1,7 +1,7 @@
 import axios from '../axios'
 
 export const useChat = {
-  list: async (limit, page) => await axios.get(`/chat?limit=${limit}&page=${page}&status=true`),
+  list: async (limit, page) => await axios.get(`/chat?limit=${limit}&page=${page}&orderType=DESC`),
   create: async (state) =>
     await axios.post('/chat', state, { headers: { 'Content-Type': 'multipart/form-data' } }),
   update: async (id, state) =>
