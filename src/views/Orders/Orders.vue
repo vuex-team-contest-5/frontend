@@ -7,13 +7,22 @@ import AddButton from '@/components/Buttons/AddButton.vue'
 import Pagination from '@/components/Pagination.vue'
 // import AddClientForm from '@/components/AddClientForm.vue'
 import { useTeacherStore } from '@/stores/teachers/teacher'
+import { useAuthStore } from '../../stores/auth/auth'
 
 const teacher_store = useTeacherStore()
+const auth_store = useAuthStore()
+
 const isAddForm = ref(false)
 const deleteId = ref(null)
 
 const toggleAddForm = () => (isAddForm.value = !isAddForm.value)
 const setDeleteId = (id) => (deleteId.value = id)
+
+const searching = ref(null)
+
+const search = (value) => {
+  searching.value = value
+}
 
 onMounted(async () => {
   await teacher_store.GET()
@@ -23,18 +32,17 @@ onMounted(async () => {
 <template>
   <div class="p-5">
     <!-- <AddClientForm v-if="isAddForm" :funcForm="toggleAddForm" /> -->
-    <DeleteForm v-if="deleteId" :funcForm="toggleAddForm" />
+    <DeleteForm v-if="deleteId && auth_store.GET_ROLE == 'admin'" :funcForm="toggleAddForm" />
     <div class="flex items-center justify-between mb-5">
-      <SearchInput />
-      <AddButton @click="toggleAddForm" />
+      <SearchInput @search="search" />
+      <AddButton v-if="auth_store.GET_ROLE == 'admin'" @click="toggleAddForm" />
     </div>
     <!-- <Loading v-if="teacher_store.LOAD" /> -->
     <div class="">
       <h3 v-if="!teacher_store.DATA.length" class="text-5xl w-full text-center py-20 text-gray-400">
         Hech qanday ma'lumot topilmadi 🤷‍♂️
-        {{ teacher_store.DATA }}
       </h3>
-      <div class="relative overflow-x-auto rounded-xl shadow-lg">
+      <div v-else class="relative overflow-x-auto rounded-xl shadow-lg">
         <table class="w-full text-sm text-left text-gray-500">
           <thead class="text-sm text-white uppercase bg-[#4D44B5]">
             <tr>
