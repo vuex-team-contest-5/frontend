@@ -3,12 +3,16 @@ import { onMounted, reactive } from 'vue'
 import { useAuthStore } from '../../stores/auth/auth'
 import HomeTeacherTable from '@/components/HomeTeacherTable.vue'
 import HomeProductTable from '@/components/HomeProductTable.vue'
+import { useProductsStore } from '../../stores/products/products'
+
+const products_store = useProductsStore()
 const auth_store = useAuthStore()
 
 const data = reactive({ countInfo: {} })
 
 onMounted(async () => {
   data.countInfo = (await auth_store.GET_COUNT_INFO()).data
+  await products_store.GET()
 })
 </script>
 
@@ -55,7 +59,11 @@ onMounted(async () => {
 
     <HomeTeacherTable v-if="auth_store.GET_ROLE == 'admin'" />
 
-    <HomeProductTable v-else-if="auth_store.GET_ROLE == 'client'" />
+    <HomeProductTable
+      v-else-if="auth_store.GET_ROLE == 'client'"
+      :products="products_store.DATA"
+      :load="products_store.LOAD"
+    />
   </div>
 </template>
 

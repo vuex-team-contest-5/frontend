@@ -5,10 +5,15 @@ import SearchInput from '@/components/SearchInput.vue'
 import Loading from '@/components/Loading.vue'
 import AddButton from '@/components/Buttons/AddButton.vue'
 import EquipmentsCards from '@/components/EquipmentsCards.vue'
-import AddEquipmentForm from '@/components/AddEquipmentForm.vue'
-import { useEquipmentsStore } from '@/stores/equipments/equipments'
+import DeleteForm from '@/components/DeleteForm.vue'
+import CirclePagination from '@/components/CirclePagination.vue'
+import AddEquipmentForm from '../../components/Equipment/AddEquipmentForm.vue'
+import { useEquipmentsStore } from '../../stores/equipments/equipments'
+import { useAuthStore } from '../../stores/auth/auth'
 
-const teacher_store = useEquipmentsStore()
+const equipments_store = useEquipmentsStore()
+const auth_store = useAuthStore()
+
 const isAddForm = ref(false)
 const deleteId = ref(null)
 const infoId = ref(null)
@@ -17,8 +22,28 @@ const editId = ref(null)
 const toggleAddForm = () => (isAddForm.value = !isAddForm.value)
 const setDeleteId = (id) => (deleteId.value = id)
 
+const searching = ref(null)
+
+const search = (value) => {
+  searching.value = value
+}
+
+const equipments = computed(() => {
+  if (searching.value)
+    return equipments_store.DATA.filter(
+      (item) =>
+        item.name.toLocaleLowerCase().includes(searching.value.toLocaleLowerCase()) ||
+        item.price.toLocaleLowerCase().includes(searching.value.toLocaleLowerCase()) ||
+        item.brand.toLocaleLowerCase().includes(searching.value.toLocaleLowerCase()) ||
+        item.info.toLocaleLowerCase().includes(searching.value.toLocaleLowerCase()) ||
+        item.category.name.toLocaleLowerCase().includes(searching.value.toLocaleLowerCase())
+    )
+
+  return equipments_store.DATA
+})
+
 onMounted(async () => {
-  await teacher_store.GET()
+  await equipments_store.GET()
 })
 </script>
 
@@ -30,16 +55,22 @@ onMounted(async () => {
       <SearchInput @search="search" />
       <AddButton v-if="auth_store.GET_ROLE == 'admin'" @click="toggleAddForm" />
     </div>
-    <!-- <Loading v-if="teacher_store.LOAD" /> -->
+    <Loading v-if="equipments_store.LOAD" />
     <div class="">
-      <h3 v-if="!teacher_store.DATA.length" class="text-5xl w-full text-center py-20 text-gray-400">
+      <h3
+        v-if="!equipments_store.DATA.length && !equipments_store.LOAD"
+        class="text-5xl w-full text-center py-20 text-gray-400"
+      >
         Hali ma'lumot qo'shilmagan 🤷‍♂️
       </h3>
-      <div v-else class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-5">
-        <EquipmentsCards v-for="el in teacher_store.DATA" :data="el" :deleteFunc="setDeleteid" />
-        <Pagination />
+
+      <div v-else>
+        <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-5">
+          <EquipmentsCards v-for="el in equipments" :data="el" :deleteFunc="setDeleteId" />
+        </div>
       </div>
-      <CirclePagination :data="product_store.DATA" :meta="product_store.META" />
+
+      <CirclePagination :data="equipments" :meta="equipments_store.META" />
     </div>
   </div>
 </template>

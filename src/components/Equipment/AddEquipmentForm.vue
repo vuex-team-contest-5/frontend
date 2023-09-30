@@ -2,11 +2,11 @@
 defineProps(['funcForm'])
 import { reactive, onMounted } from 'vue'
 import { useCategoryStore } from '@/stores/category/category'
-import { useProductsStore } from '@/stores/products/products'
+import { useEquipmentsStore } from '../../stores/equipments/equipments'
 import { toast } from 'vue3-toastify'
 
 const category_store = useCategoryStore()
-const product_store = useProductsStore()
+const equipment_store = useEquipmentsStore()
 
 const newData = reactive({
   image: '',
@@ -45,7 +45,7 @@ const createEquipment = async () => {
     formData.append('status', newData.status)
     formData.append('categoryId', newData.categoryId)
 
-    await product_store.CREATE(formData, 'equipment')
+    await equipment_store.CREATE(formData, 'equipment')
     funcForm()
     toast.success(`Muvaffaqiyatli tizimga kirdingiz`, { autoClose: 1000 })
   } catch (error) {

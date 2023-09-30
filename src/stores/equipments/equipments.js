@@ -4,48 +4,52 @@ import { useEquipments } from '@/service/equipments'
 
 export const useEquipmentsStore = defineStore('equipments', () => {
   const equipments = reactive({
-    data: [
-      {
-        id: 1,
-        name: 'Trinajor runner',
-        price: '130 $',
-        brand: 'Doys Rong',
-        info: 'Yugurish uchun',
-        img: '@/assets/img/equip.png',
-        count: '1'
-      },
-      {
-        id: 1,
-        name: 'Gantel',
-        price: '400 $',
-        brand: 'Eleiko',
-        info: 'Biceps uchun',
-        img: '@/assets/img/barbell.png',
-        count: '3'
-      }
-    ],
+    meta: { limit: 10, currentPage: 1 },
+    data: [],
     load: true
   })
 
-  const CREATE = (newData) => {
-    // equipments.data.push(newData)
+  const GET = async (type) => {
+    const res = (await useEquipments.list(equipments.meta.limit, equipments.meta.currentPage, type))
+      .data
+    equipments.data = res.data
+    equipments.meta = res.meta
+    equipments.load = false
+  }
+
+  const CREATE = async (newData, type) => {
+    await useEquipments.create(newData)
+    await GET(type)
   }
 
   const UPDATE = async () => {}
 
-  const DELETE = async () => {}
-
-  const GET = async () => {
-    console.log(equipments.data)
-    // equipments.data = (await useTeacher.list()).data
-    // console.log(equipments.data)
-    // equipments.load = false
+  const DELETE = async (id, type) => {
+    await useEquipments.delete(id)
+    await GET(type)
   }
 
-  const GETONE = async () => {}
+  const GETONE = (id) => {
+    const res = equipments.data.find((teacher) => teacher.id === id)
+    return res
+  }
+
+  const NEXT = async () => {
+    equipments.currentPage++
+    await GET()
+  }
+
+  const PREV = async () => {
+    if (equipments.currentPage < 1) {
+      equipments.currentPage--
+    }
+
+    await GET()
+  }
 
   const DATA = computed(() => equipments.data)
   const LOAD = computed(() => equipments.load)
+  const META = computed(() => equipments.meta)
 
-  return { CREATE, UPDATE, DELETE, GET, GETONE, DATA, LOAD }
+  return { CREATE, UPDATE, DELETE, GET, GETONE, DATA, LOAD, META }
 })

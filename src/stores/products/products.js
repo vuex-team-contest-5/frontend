@@ -4,48 +4,51 @@ import { useProducts } from '@/service/products'
 
 export const useProductsStore = defineStore('products', () => {
   const products = reactive({
-    data: [
-      {
-        id: 1,
-        name: 'Trinajor runner',
-        price: '130 $',
-        brand: 'Doys Rong',
-        info: 'Yugurish uchun',
-        img: '@/assets/img/equip.png',
-        count: '1'
-      },
-      {
-        id: 1,
-        name: 'Gantel',
-        price: '400 $',
-        brand: 'Eleiko',
-        info: 'Biceps uchun',
-        img: '@/assets/img/barbell.png',
-        count: '3'
-      }
-    ],
+    meta: { limit: 10, currentPage: 1 },
+    data: [],
     load: true
   })
 
-  const CREATE = (newData) => {
-    // products.data.push(newData)
+  const GET = async (type) => {
+    const res = (await useProducts.list(products.meta.limit, products.meta.currentPage, type)).data
+    products.data = res.data
+    products.meta = res.meta
+    products.load = false
+  }
+
+  const CREATE = async (newData, type) => {
+    await useProducts.create(newData)
+    await GET(type)
   }
 
   const UPDATE = async () => {}
 
-  const DELETE = async () => {}
-
-  const GET = async () => {
-    console.log(products.data)
-    // products.data = (await useTeacher.list()).data
-    // console.log(products.data)
-    // products.load = false
+  const DELETE = async (id, type) => {
+    await useProducts.delete(id)
+    await GET(type)
   }
 
-  const GETONE = async () => {}
+  const GETONE = (id) => {
+    const res = products.data.find((teacher) => teacher.id === id)
+    return res
+  }
+
+  const NEXT = async () => {
+    products.currentPage++
+    await GET()
+  }
+
+  const PREV = async () => {
+    if (products.currentPage < 1) {
+      products.currentPage--
+    }
+
+    await GET()
+  }
 
   const DATA = computed(() => products.data)
   const LOAD = computed(() => products.load)
+  const META = computed(() => products.meta)
 
-  return { CREATE, UPDATE, DELETE, GET, GETONE, DATA, LOAD }
+  return { CREATE, UPDATE, DELETE, GET, GETONE, DATA, LOAD, META }
 })

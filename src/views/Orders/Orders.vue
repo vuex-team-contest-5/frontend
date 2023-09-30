@@ -5,6 +5,7 @@ import SearchInput from '@/components/SearchInput.vue'
 import Loading from '@/components/Loading.vue'
 import AddButton from '@/components/Buttons/AddButton.vue'
 import Pagination from '@/components/Pagination.vue'
+import DeleteForm from '@/components/DeleteForm.vue'
 // import AddClientForm from '@/components/AddClientForm.vue'
 import { useTeacherStore } from '@/stores/teachers/teacher'
 import { useAuthStore } from '../../stores/auth/auth'
@@ -25,7 +26,9 @@ const search = (value) => {
 }
 
 onMounted(async () => {
-  await teacher_store.GET()
+  if (auth_store.GET_ROLE == 'admin') {
+    await teacher_store.GET()
+  }
 })
 </script>
 
