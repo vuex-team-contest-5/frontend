@@ -27,7 +27,7 @@ export const useTeacherStore = defineStore('teacher', () => {
   const UPDATE = async () => {}
 
   const DELETE = async (id, type) => {
-    await useProduct.delete(id)
+    await useTeacher.delete(id)
     await GET(type)
   }
 

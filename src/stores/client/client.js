@@ -27,7 +27,7 @@ export const useClientStore = defineStore('client', () => {
   const UPDATE = async () => {}
 
   const DELETE = async (id, type) => {
-    await useProduct.delete(id)
+    await useTeacher.delete(id)
     await GET(type)
   }
 

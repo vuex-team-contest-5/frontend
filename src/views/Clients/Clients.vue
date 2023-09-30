@@ -7,6 +7,7 @@ import AddButton from '@/components/Buttons/AddButton.vue'
 import Pagination from '@/components/Pagination.vue'
 import AddClientForm from '@/components/Client/AddClientForm.vue'
 import ClientInfo from '@/components/Client/ClientInfo.vue'
+import DeleteForm from '@/components/DeleteForm.vue'
 import { main_URL } from '@/service/axios'
 import { useClientStore } from '@/stores/client/client'
 
@@ -16,8 +17,18 @@ const deleteId = ref(null)
 const infoId = ref(null)
 
 const toggleAddForm = () => (isAddForm.value = !isAddForm.value)
-const setDeleteId = (id) => (deleteId.value = id)
+const setDeleteId = (id = null) => {
+  console.log(id)
+  deleteId.value = id
+}
 const setInfoId = (id = null) => (infoId.value = id)
+
+const deleteFunc = async () => {
+  await client_store.DELETE(deleteId.value)
+  deleteId.value = null
+  infoId.value = null
+  editId.value = null
+}
 
 onMounted(async () => {
   await client_store.GET()
@@ -27,8 +38,13 @@ onMounted(async () => {
 <template>
   <div class="p-5">
     <AddClientForm v-if="isAddForm" :funcForm="toggleAddForm" />
-    <DeleteForm v-if="deleteId" :funcForm="toggleAddForm" />
-    <ClientInfo v-if="infoId" :funcForm="setInfoId" :data="client_store.GETONE(infoId)" />
+    <DeleteForm v-if="deleteId" :setDeleteId="setDeleteId" :deleteFunc="deleteFunc" />
+    <ClientInfo
+      v-if="infoId"
+      :funcForm="setInfoId"
+      :data="client_store.GETONE(infoId)"
+      :setDeleteId="setDeleteId"
+    />
     <div class="flex items-center justify-between mb-5">
       <SearchInput />
       <AddButton @click="toggleAddForm" />
@@ -55,9 +71,12 @@ onMounted(async () => {
             <tr
               v-for="el in client_store.DATA"
               class="cursor-pointer bg-white hover:bg-purple-100 border-b"
-              @click="() => setInfoId(el.id)"
             >
-              <th scope="row" class="px-7 py-4 flex items-center gap-3">
+              <th
+                @click="() => setInfoId(el.id)"
+                scope="row"
+                class="px-7 py-4 flex items-center gap-3"
+              >
                 <img
                   :src="
                     el.imageName
@@ -80,7 +99,10 @@ onMounted(async () => {
               <td class="px-7 py-4">{{ el.period }}</td>
               <td class="px-7 py-4">
                 <div class="flex items-center justify-center gap-3">
-                  <i class="bx bx-trash text-gray-500 text-xl"></i>
+                  <i
+                    @click="() => setDeleteId(el.id)"
+                    class="bx bx-trash text-gray-500 text-xl"
+                  ></i>
                   <i class="bx bx-pencil text-gray-500 text-xl"></i>
                 </div>
               </td>

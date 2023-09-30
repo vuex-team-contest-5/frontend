@@ -1,5 +1,5 @@
 <script setup>
-defineProps(['data', 'funcForm'])
+defineProps(['data', 'funcForm', 'setDeleteFunc'])
 import { main_URL } from '@/service/axios'
 import { formatDays } from '@/helpers/formatDays'
 import Iconlik from '@/components/Iconlik.vue'
@@ -78,7 +78,7 @@ const calcAge = (year) => {
           </button>
           <button
             class="border bg-red-500 text-white p-2 px-4 rounded-full shadow-xl text-sm"
-            @click="createUser"
+            @click="() => setDeleteId(data.id)"
           >
             O'chirish
           </button>

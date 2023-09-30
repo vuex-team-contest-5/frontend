@@ -10,5 +10,5 @@ export const useClient = {
     await axios.put(`/client/${id}`, state, {
       headers: { 'Content-Type': 'multipart/form-data' }
     }),
-  delete: async (id) => await axios.put(`/client/${id}`)
+  delete: async (id) => await axios.delete(`/client/${id}`)
 }

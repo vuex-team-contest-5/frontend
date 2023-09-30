@@ -4,7 +4,7 @@ defineProps(['setDeleteId', 'deleteFunc'])
 
 <template>
   <div
-    class="overflow-y-auto flex items-center overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center bg-black/50 w-full md:inset-0 h-modal md:h-full"
+    class="overflow-y-auto flex items-center overflow-x-hidden fixed top-0 right-0 left-0 z-[60] justify-center bg-black/50 w-full md:inset-0 h-modal md:h-full"
   >
     <div class="relative p-4 w-full max-w-lg h-full md:h-auto">
       <div class="relative p-4 text-center bg-white rounded-lg shadow sm:p-5">

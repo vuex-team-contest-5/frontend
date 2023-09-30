@@ -10,5 +10,5 @@ export const useTeacher = {
     await axios.put(`/teacher/${id}`, state, {
       headers: { 'Content-Type': 'multipart/form-data' }
     }),
-  delete: async (id) => await axios.put(`/teacher/${id}`)
+  delete: async (id) => await axios.delete(`/teacher/${id}`)
 }

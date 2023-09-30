@@ -8,8 +8,8 @@ import UserCards from '@/components/UserCards.vue'
 import CirclePagination from '@/components/CirclePagination.vue'
 import AddTeacherForm from '@/components/Teacher/AddTeacherForm.vue'
 import DeleteForm from '@/components/DeleteForm.vue'
-import { useTeacherStore } from '@/stores/teachers/teacher'
 import TeacherInfo from '@/components/Teacher/TeacherInfo.vue'
+import { useTeacherStore } from '@/stores/teachers/teacher'
 
 const teacher_store = useTeacherStore()
 const isAddForm = ref(false)
@@ -21,7 +21,13 @@ const toggleAddForm = () => (isAddForm.value = !isAddForm.value)
 const setDeleteId = (id = null) => (deleteId.value = id)
 const setInfoId = (id = null) => (infoId.value = id)
 const setEditId = (id = null) => (editId.value = id)
-const deleteFunc = () => {}
+
+const deleteFunc = async () => {
+  await teacher_store.DELETE(deleteId.value)
+  deleteId.value = null
+  infoId.value = null
+  editId.value = null
+}
 
 onMounted(async () => {
   await teacher_store.GET()
@@ -32,7 +38,12 @@ onMounted(async () => {
   <div class="p-5">
     <AddTeacherForm v-if="isAddForm" :funcForm="toggleAddForm" />
     <DeleteForm v-if="deleteId" :setDeleteId="setDeleteId" :deleteFunc="deleteFunc" />
-    <TeacherInfo v-if="infoId" :funcForm="setInfoId" :data="teacher_store.GETONE(infoId)" />
+    <TeacherInfo
+      v-if="infoId"
+      :funcForm="setInfoId"
+      :data="teacher_store.GETONE(infoId)"
+      :setDeleteId="setDeleteId"
+    />
     <div class="flex items-center justify-between mb-5">
       <SearchInput />
       <AddButton @click="toggleAddForm" />

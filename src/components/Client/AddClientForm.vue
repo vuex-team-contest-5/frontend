@@ -23,12 +23,13 @@ const newUser = reactive({
 })
 
 const fileSelected = (e) => {
-  newUser.image = e.target.files[0]
   console.log(e)
+  newUser.image = e.target.files[0]
 }
 
 const createUser = async () => {
   try {
+    console.log(newUser)
     if (!/^998([012345789]{2}|6[125679]|7[01234569])[0-9]{7}$/.test(newUser.phoneNumber)) {
       toast.error(`Telefon raqamni to'g'ri kiriting`, { autoClose: 1000 })
       return
@@ -123,7 +124,7 @@ onMounted(async () => {
               >Telefon raqami *</label
             >
             <input
-              type="text"
+              type="number"
               id="last_name"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="+998941234567"
@@ -144,6 +145,34 @@ onMounted(async () => {
                 {{ el.firstName }} {{ el.lastName }}
               </option>
             </select>
+          </div>
+        </div>
+        <div class="flex justify-between gap-5 mb-5">
+          <div class="w-1/2">
+            <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900">
+              Muddati(oy) *
+            </label>
+            <input
+              type="number"
+              id="last_name"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+              placeholder="3"
+              required
+              v-model="newUser.period"
+            />
+          </div>
+          <div class="w-1/2">
+            <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900">
+              Narxi *
+            </label>
+            <input
+              type="text"
+              id="last_name"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+              placeholder="130"
+              required
+              v-model="newUser.servicePrice"
+            />
           </div>
         </div>
         <div class="flex justify-between gap-5 mb-5">

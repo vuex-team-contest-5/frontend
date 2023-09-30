@@ -8,6 +8,7 @@ import ProductCards from '@/components/Product/ProductCards.vue'
 import CirclePagination from '@/components/CirclePagination.vue'
 import DeleteForm from '@/components/DeleteForm.vue'
 import AddProductForm from '@/components/Product/AddProductForm.vue'
+import ProductInfo from '@/components/Product/ProductInfo.vue'
 import { useProductStore } from '@/stores/product/product'
 
 const product_store = useProductStore()
@@ -24,10 +25,10 @@ const setDeleteId = (id = null) => {
 const setInfoId = (id = null) => (infoId.value = id)
 const setEditId = (id = null) => (editId.value = id)
 const deleteFunc = async () => {
-  console.log(deleteId.value)
   await product_store.DELETE(deleteId.value, 'equipment')
   deleteId.value = null
-  console.log('DELETED')
+  infoId.value = null
+  editId.value = null
 }
 
 onMounted(async () => {
@@ -39,6 +40,13 @@ onMounted(async () => {
   <div class="p-5">
     <AddProductForm v-if="isAddForm" :funcForm="toggleAddForm" />
     <DeleteForm v-if="deleteId" :setDeleteId="setDeleteId" :deleteFunc="deleteFunc" />
+    <ProductInfo
+      v-if="infoId"
+      :funcForm="setInfoId"
+      :data="product_store.GETONE(infoId)"
+      :setDeleteId="setDeleteId"
+    />
+
     <div class="flex items-center justify-between mb-5">
       <SearchInput />
       <AddButton @click="toggleAddForm" />
@@ -49,7 +57,12 @@ onMounted(async () => {
         Hali ma'lumot qo'shilmagan 🤷‍♂️
       </h3>
       <div v-else class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-5">
-        <ProductCards v-for="el in product_store.DATA" :data="el" :deleteFunc="setDeleteId" />
+        <ProductCards
+          v-for="el in product_store.DATA"
+          :data="el"
+          :setDeleteId="setDeleteId"
+          :setInfoId="setInfoId"
+        />
       </div>
       <CirclePagination :data="product_store.DATA" :meta="product_store.META" />
     </div>

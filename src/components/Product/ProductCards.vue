@@ -1,10 +1,11 @@
 <script setup>
-defineProps(['data', 'deleteFunc'])
+defineProps(['data', 'deleteFunc', 'setInfoId'])
 import { main_URL } from '@/service/axios'
 </script>
 
 <template>
   <div
+    @click="() => setInfoId(data.id)"
     class="cursor-pointer hover:shadow-xl duration-300 bg-[#4D44B5]/30 rounded-xl relative text-center py-5 pt-10 px-3"
   >
     <button class="text-gray-500 text-xl absolute top-2 right-11">

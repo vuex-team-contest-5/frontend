@@ -1,7 +1,6 @@
 <script setup>
-defineProps(['data', 'funcForm'])
+defineProps(['data', 'funcForm', 'setDeleteId', 'setInfoId'])
 import { main_URL } from '@/service/axios'
-import { formatDays } from '@/helpers/formatDays'
 import Iconlik from '@/components/Iconlik.vue'
 
 const calcAge = (year) => {
@@ -16,7 +15,7 @@ const calcAge = (year) => {
       <div
         class="bg-[#4D44B5] w-full px-10 p-5 font-semibold flex items-center justify-between rounded-t-xl"
       >
-        <span class="text-white text-xl">Ustoz ma'lumotlari</span>
+        <span class="text-white text-xl">Jihoz ma'lumotlari</span>
         <button @click="() => funcForm(null)">
           <i class="bx bx-x text-white text-3xl cursor-pointer"></i>
         </button>
@@ -31,30 +30,23 @@ const calcAge = (year) => {
           <div class="w-[70%] h-56 p-5 rounded-2xl bg-gray-200 border-2 border-gray-400/80">
             <div class="mb-3 flex items-center justify-between">
               <span class="text-2xl font-bold text-[#303972]">
-                {{ data.firstName }} {{ data.lastName }}
+                {{ data.name }}
               </span>
               <div class="">
-                <h3 class="text-sm text-[#303972] font-semibold">
-                  {{ data.birthDate.replace(/-/, '.') }}
-                </h3>
-                <h3 class="text-sm text-[#303972] font-semibold">ID {{ data.id.slice(0, 7) }}</h3>
+                <h3 class="text-md text-[#303972] font-semibold">ID {{ data.id.slice(0, 7) }}</h3>
               </div>
             </div>
-            <h3 class="text-2xl font-bold text-[#303972] mb-5">
-              {{ calcAge(data.birthDate.slice(0, 4)) }} yosh
+            <h3 class="text-xl font-bold text-[#303972] mb-5">
+              Category: {{ data.category.name }}
             </h3>
-            <div class="flex items-center justify-between mb-5">
-              <span class="text-xl font-bold text-[#303972]">
-                {{ data.isMale ? 'Erkak' : 'Ayol' }}
-              </span>
-              <span class="text-md font-bold text-[#303972]">
-                {{ data.email }}
-              </span>
-            </div>
+            <h3 class="text-xl font-bold text-[#303972] mb-5">
+              Brand: <span class="text-red-500">{{ data.brand }}</span>
+            </h3>
+
             <div class="flex items-center justify-between pr-10">
-              <Iconlik icon="bx bx-user" title="Toifa" :value="data.type.name" />
-              <Iconlik icon="bx bx-calendar-alt" title="Kuni" :value="formatDays(data.workDay)" />
-              <Iconlik icon="bx bx-phone" title="Tel:" :value="data.phoneNumber" />
+              <Iconlik icon="bx bxs-discount" title="Soni" :value="data.count" />
+              <Iconlik icon="bx bx-calendar-alt" title="Kuni" value="..." />
+              <Iconlik icon="bx bxs-badge-dollar" title="Narxi" :value="data.phoneNumber" />
             </div>
           </div>
         </div>
@@ -70,8 +62,8 @@ const calcAge = (year) => {
             O'zgartirish
           </button>
           <button
-            class="border bg-[#4D44B5] text-white p-2 px-4 rounded-full shadow-xl text-sm"
-            @click="createUser"
+            class="border bg-red-500 text-white p-2 px-4 rounded-full shadow-xl text-sm"
+            @click="() => setDeleteId(data.id)"
           >
             O'chirish
           </button>
