@@ -6,15 +6,18 @@ import Loading from '@/components/Loading.vue'
 import AddButton from '@/components/Buttons/AddButton.vue'
 import Pagination from '@/components/Pagination.vue'
 import AddClientForm from '@/components/Client/AddClientForm.vue'
+import ClientInfo from '@/components/Client/ClientInfo.vue'
 import { main_URL } from '@/service/axios'
 import { useClientStore } from '@/stores/client/client'
 
 const client_store = useClientStore()
 const isAddForm = ref(false)
 const deleteId = ref(null)
+const infoId = ref(null)
 
 const toggleAddForm = () => (isAddForm.value = !isAddForm.value)
 const setDeleteId = (id) => (deleteId.value = id)
+const setInfoId = (id = null) => (infoId.value = id)
 
 onMounted(async () => {
   await client_store.GET()
@@ -25,6 +28,7 @@ onMounted(async () => {
   <div class="p-5">
     <AddClientForm v-if="isAddForm" :funcForm="toggleAddForm" />
     <DeleteForm v-if="deleteId" :funcForm="toggleAddForm" />
+    <ClientInfo v-if="infoId" :funcForm="setInfoId" :data="client_store.GETONE(infoId)" />
     <div class="flex items-center justify-between mb-5">
       <SearchInput />
       <AddButton @click="toggleAddForm" />
@@ -51,6 +55,7 @@ onMounted(async () => {
             <tr
               v-for="el in client_store.DATA"
               class="cursor-pointer bg-white hover:bg-purple-100 border-b"
+              @click="() => setInfoId(el.id)"
             >
               <th scope="row" class="px-7 py-4 flex items-center gap-3">
                 <img
