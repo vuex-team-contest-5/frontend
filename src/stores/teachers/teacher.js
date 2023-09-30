@@ -5,15 +5,14 @@ import { useTeacher } from '@/service/teacher'
 export const useTeacherStore = defineStore('teacher', () => {
   const teachers = reactive({
     meta: {
-      limit: 2,
-      page: 1
+      limit: 4,
+      currentPage: 1
     },
     data: [],
     load: true
   })
 
   const CREATE = async (newData) => {
-    await useTeacher.list()
     await useTeacher.create(newData)
     await GET()
   }
@@ -23,13 +22,29 @@ export const useTeacherStore = defineStore('teacher', () => {
   const DELETE = async () => {}
 
   const GET = async () => {
-    const res = (await useTeacher.list(teachers.meta.limit, teachers.meta.page)).data
+    const res = (await useTeacher.list(teachers.meta.limit, teachers.meta.currentPage)).data
     teachers.data = res.data
     teachers.meta = res.meta
     teachers.load = false
   }
 
-  const GETONE = async () => {}
+  const GETONE = (id) => {
+    const res = teachers.data.find((teacher) => teacher.id === id)
+    return res
+  }
+
+  const NEXT = async () => {
+    teachers.currentPage++
+    await GET()
+  }
+
+  const PREV = async () => {
+    if (teachers.currentPage < 1) {
+      teachers.currentPage--
+    }
+
+    await GET()
+  }
 
   const DATA = computed(() => teachers.data)
   const LOAD = computed(() => teachers.load)

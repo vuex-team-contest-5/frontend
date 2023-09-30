@@ -1,11 +1,14 @@
 <script setup>
 defineProps(['funcForm'])
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
 import { useTeacherStore } from '@/stores/teachers/teacher'
 import { week } from '@/helpers/formatDays'
+import { useTypeStore } from '@/stores/type/type'
 
 const store_teacher = useTeacherStore()
+const store_type = useTypeStore()
+
 const newUser = reactive({
   image: '',
   fullName: '',
@@ -15,13 +18,18 @@ const newUser = reactive({
   birthDate: '',
   workDay: [],
   info: '',
-  isMale: '',
+  isMale: true,
   status: true,
   typeId: ''
 })
 
 const addWorkDay = (e) => {
-  newUser.workDay.push(e.target.value)
+  console.log()
+  if (e.target.checked) {
+    newUser.workDay.push(e.target.value)
+  } else {
+    newUser.workDay.splice(newUser.workDay.indexOf(e.target.value), 1)
+  }
 }
 
 const fileSelected = (e) => {
@@ -31,13 +39,16 @@ const fileSelected = (e) => {
 
 const createUser = async () => {
   try {
+    if (!/^998([012345789]{2}|6[125679]|7[01234569])[0-9]{7}$/.test(newUser.phoneNumber)) {
+      toast.error(`Telefon raqamni to'g'ri kiriting`, { autoClose: 1000 })
+      return
+    }
+    newUser.phoneNumber = `+${newUser.phoneNumber}`
     newUser.password = newUser.phoneNumber
-    newUser.workDay = newUser.workDay.join(', ')
-    console.log(newUser)
     for (let i in newUser) {
       console.log(newUser[i])
       if (!newUser[i]) {
-        toast.error(`Formalarni to'liq kiriting`, { autoClose: 1000 })
+        toast.error(`Formani to'liq to'ldiring`, { autoClose: 1000 })
         return
       }
     }
@@ -45,25 +56,35 @@ const createUser = async () => {
       toast.error(`Ismingizni to'liq  kiriting`, { autoClose: 1000 })
       return
     }
+    const [firstName, lastName] = newUser.fullName.split(' ')
 
     const formData = new FormData()
-    formData.append('image', selectedFile)
-    formData.append('fullName', newUser.fullName)
+    formData.append('image', newUser.image)
+    formData.append('firstName', firstName)
+    formData.append('lastName', lastName)
+    formData.append('phoneNumber', newUser.phoneNumber)
+    formData.append('email', newUser.email)
+    formData.append('password', newUser.password)
     formData.append('birthDate', newUser.birthDate)
-    formData.append('birthDate', newUser.birthDate)
-    formData.append('birthDate', newUser.birthDate)
-    formData.append('birthDate', newUser.birthDate)
+    formData.append('workDay', newUser.workDay.join(', '))
+    formData.append('info', newUser.info)
+    formData.append('isMale', newUser.isMale)
+    formData.append('status', newUser.status)
+    formData.append('typeId', newUser.typeId)
 
-    // Send the FormData with Axios or your store action
     await store_teacher.CREATE(formData)
-    await store_teacher.CREATE(newUser)
 
     toast.success(`Muvaffaqiyatli tizimga kirdingiz`, { autoClose: 1000 })
   } catch (error) {
     console.log(error)
-    toast.error(`Bunday o'quvchi topilmadi`, { autoClose: 1000 })
+    toast.error(`Xatolik`, { autoClose: 1000 })
   }
 }
+
+onMounted(async () => {
+  await store_type.GET()
+  newUser.typeId = store_type.DATA[0].id
+})
 </script>
 
 <template>
@@ -122,12 +143,9 @@ const createUser = async () => {
             </label>
             <select
               class="bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 outline-none"
+              @change="(e) => (newUser.typeId = e.target.value)"
             >
-              <option value="I">I</option>
-              <option value="II">II</option>
-              <option value="III">III</option>
-              <option value="IV">IV</option>
-              <option value="V">V</option>
+              <option v-for="el in store_type.DATA" :value="el.id">{{ el.name }}</option>
             </select>
           </div>
         </div>
@@ -173,7 +191,7 @@ const createUser = async () => {
               >Gmail *</label
             >
             <input
-              type="text"
+              type="email"
               class="bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="demo@gmail.com"
               required
@@ -186,10 +204,10 @@ const createUser = async () => {
             </label>
             <select
               class="bg-gray-50 border border-[#4D44B5] text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 outline-none"
-              v-model="newUser.isMale"
+              @change="(e) => (newUser.isMale = e.target.value)"
             >
-              <option selected class="true">Erkak</option>
-              <option class="false">Ayol</option>
+              <option value="true" selected>Erkak</option>
+              <option value="false">Ayol</option>
             </select>
           </div>
         </div>
@@ -199,14 +217,15 @@ const createUser = async () => {
           class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-[#4D44B5] mb-5 rounded-lg sm:flex"
         >
           <li
-            v-for="day in week"
+            v-for="(day, i) in week"
             class="cursor-pointer w-full border-b border-[#4D44B5] sm:border-b-0 sm:border-r"
           >
             <div class="cursor-pointer flex items-center pl-3">
               <input
                 :id="day"
                 type="checkbox"
-                value=""
+                :value="i"
+                @change="addWorkDay"
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-[#4D44B5] rounded focus:ring-blue-500"
               />
               <label :for="day" class="w-full py-3 ml-2 text-sm font-medium text-gray-900">
@@ -217,11 +236,6 @@ const createUser = async () => {
         </ul>
 
         <div class="flex items-center justify-end gap-5">
-          <button
-            class="border text-sm text-[#4D44B5] border-[#4D44B5] p-2 px-4 rounded-full shadow-xl"
-          >
-            Saqlash
-          </button>
           <button
             class="border bg-[#4D44B5] text-white p-2 px-4 rounded-full shadow-xl text-sm"
             @click="createUser"

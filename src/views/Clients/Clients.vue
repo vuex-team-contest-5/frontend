@@ -5,10 +5,11 @@ import SearchInput from '@/components/SearchInput.vue'
 import Loading from '@/components/Loading.vue'
 import AddButton from '@/components/Buttons/AddButton.vue'
 import Pagination from '@/components/Pagination.vue'
-import AddClientForm from '@/components/AddClientForm.vue'
-import { useTeacherStore } from '@/stores/teachers/teacher'
+import AddClientForm from '@/components/Client/AddClientForm.vue'
+import { main_URL } from '@/service/axios'
+import { useClientStore } from '@/stores/client/client'
 
-const teacher_store = useTeacherStore()
+const client_store = useClientStore()
 const isAddForm = ref(false)
 const deleteId = ref(null)
 
@@ -16,7 +17,7 @@ const toggleAddForm = () => (isAddForm.value = !isAddForm.value)
 const setDeleteId = (id) => (deleteId.value = id)
 
 onMounted(async () => {
-  await teacher_store.GET()
+  await client_store.GET()
 })
 </script>
 
@@ -28,11 +29,11 @@ onMounted(async () => {
       <SearchInput />
       <AddButton @click="toggleAddForm" />
     </div>
-    <!-- <Loading v-if="teacher_store.LOAD" /> -->
-    <div class="">
-      <h3 v-if="!teacher_store.DATA.length" class="text-5xl w-full text-center py-20 text-gray-400">
+    <Loading v-if="client_store.LOAD" />
+    <div v-else class="">
+      <h3 v-if="!client_store.DATA.length" class="text-5xl w-full text-center py-20 text-gray-400">
         Hech qanday ma'lumot topilmadi 🤷‍♂️
-        {{ teacher_store.DATA }}
+        {{ client_store.DATA }}
       </h3>
       <div class="relative overflow-x-auto rounded-xl shadow-lg">
         <table class="w-full text-sm text-left text-gray-500">
@@ -47,22 +48,31 @@ onMounted(async () => {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="el in 3" class="cursor-pointer bg-white hover:bg-purple-100 border-b">
+            <tr
+              v-for="el in client_store.DATA"
+              class="cursor-pointer bg-white hover:bg-purple-100 border-b"
+            >
               <th scope="row" class="px-7 py-4 flex items-center gap-3">
                 <img
-                  src="https://yaaz.az/wp-content/uploads/2016/10/halid-bin-valid.jpg"
+                  :src="
+                    el.imageName
+                      ? `${main_URL}/image/${data.imageName}`
+                      : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnbhk5N2f5z5F3ubhn6aWM4TUzxceKsa0RIg&usqp=CAU'
+                  "
                   class="h-14 w-14 rounded-full border"
                   alt=""
                 />
                 <div class="">
-                  <h3 class="text-[#101828] font-[700] text-[15px]">John Doe</h3>
-                  <h3 class="text-[#667085] text-sm">+998941234567</h3>
+                  <h3 class="text-[#101828] font-[700] text-[15px]">
+                    {{ el.firstName }} {{ el.lastName }}
+                  </h3>
+                  <h3 class="text-[#667085] text-sm">{{ el.phoneNumber }}</h3>
                 </div>
               </th>
-              <td class="px-7 py-4 text-[#232D42]">1234567</td>
-              <td class="px-7 py-4">Mirzaev Mirkomil</td>
-              <td class="px-7 py-4">2023.04.01</td>
-              <td class="px-7 py-4">3</td>
+              <td class="px-7 py-4 text-[#232D42]">ID{{ el.id.slice(0, 8) }}</td>
+              <td class="px-7 py-4">{{ el.teacher.firstName }} {{ el.teacher.lastName }}</td>
+              <td class="px-7 py-4">{{ el.startedAt }}</td>
+              <td class="px-7 py-4">{{ el.period }}</td>
               <td class="px-7 py-4">
                 <div class="flex items-center justify-center gap-3">
                   <i class="bx bx-trash text-gray-500 text-xl"></i>

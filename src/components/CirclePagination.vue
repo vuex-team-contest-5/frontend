@@ -9,9 +9,14 @@ defineProps(['data', 'meta'])
       <i class="bx bxs-left-arrow text-gray-500"></i>
       <button
         v-for="el in meta.totalPages"
-        class="border border-[#4D44B5] bg-[#4D44B5] h-10 w-10 text-white rounded-full"
+        class="h-10 w-10 rounded-full"
+        :class="
+          el == meta.currentPage
+            ? 'border border-[#4D44B5] bg-[#4D44B5] text-white '
+            : 'border border-[#4D44B5] text-[#4D44B5]'
+        "
       >
-        1
+        {{ el }}
       </button>
       <i class="bx bxs-right-arrow text-gray-500"></i>
     </div>

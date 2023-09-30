@@ -1,6 +1,12 @@
 <script setup>
 defineProps(['funcForm'])
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
+import { toast } from 'vue3-toastify'
+import { useTeacherStore } from '@/stores/teachers/teacher'
+import { useClientStore } from '@/stores/client/client'
+
+const store_teacher = useTeacherStore()
+const store_client = useClientStore()
 
 const newUser = reactive({
   image: '',
@@ -12,8 +18,63 @@ const newUser = reactive({
   servicePrice: '',
   startedAt: '',
   period: '',
-  status: '',
+  status: true,
   teacherId: ''
+})
+
+const fileSelected = (e) => {
+  newUser.image = e.target.files[0]
+  console.log(e)
+}
+
+const createUser = async () => {
+  try {
+    if (!/^998([012345789]{2}|6[125679]|7[01234569])[0-9]{7}$/.test(newUser.phoneNumber)) {
+      toast.error(`Telefon raqamni to'g'ri kiriting`, { autoClose: 1000 })
+      return
+    }
+    newUser.phoneNumber = `+${newUser.phoneNumber}`
+    newUser.password = newUser.phoneNumber
+    for (let i in newUser) {
+      console.log(newUser[i])
+      if (!newUser[i]) {
+        toast.error(`Formani to'liq to'ldiring`, { autoClose: 1000 })
+        return
+      }
+    }
+    if (newUser.fullName.split(' ').length < 2) {
+      toast.error(`Ismingizni to'liq  kiriting`, { autoClose: 1000 })
+      return
+    }
+    const [firstName, lastName] = newUser.fullName.split(' ')
+
+    const formData = new FormData()
+    formData.append('image', newUser.image)
+    formData.append('firstName', firstName)
+    formData.append('lastName', lastName)
+    formData.append('phoneNumber', newUser.phoneNumber)
+    formData.append('email', newUser.email)
+    formData.append('password', newUser.password)
+    formData.append('birthDate', newUser.birthDate)
+    formData.append('servicePrice', newUser.servicePrice)
+    formData.append('startedAt', newUser.startedAt)
+    formData.append('period', newUser.period)
+    formData.append('status', newUser.status)
+    formData.append('teacherId', newUser.teacherId)
+
+    await store_teacher.CREATE(formData)
+    funcForm()
+    toast.success(`Muvaffaqiyatli tizimga kirdingiz`, { autoClose: 1000 })
+  } catch (error) {
+    console.log(error)
+    toast.error(`Xatolik`, { autoClose: 1000 })
+  }
+}
+
+onMounted(async () => {
+  await store_client.GET()
+  await store_teacher.GET()
+  newUser.teacherId = store_teacher.DATA[0].id
 })
 </script>
 
@@ -77,8 +138,11 @@ const newUser = reactive({
             <select
               id="countries"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 outline-none"
+              @change="(e) => (newUser.teacherId = e.target.value)"
             >
-              <option value="I">Olimov Holiq</option>
+              <option v-for="el in store_teacher.DATA" :value="el.id">
+                {{ el.firstName }} {{ el.lastName }}
+              </option>
             </select>
           </div>
         </div>
@@ -109,6 +173,18 @@ const newUser = reactive({
           </div>
           <div class="w-1/2">
             <div class="w-full mb-5">
+              <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900">
+                Boshlash sanasi *
+              </label>
+              <input
+                type="date"
+                id="last_name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+                required
+                v-model="newUser.startedAt"
+              />
+            </div>
+            <div class="w-full mb-5">
               <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900"
                 >Gmail *</label
               >
@@ -121,18 +197,6 @@ const newUser = reactive({
                 v-model="newUser.email"
               />
             </div>
-            <div class="w-full">
-              <label for="countries" class="block mb-2 text-sm font-medium text-gray-900">
-                Jinsi *
-              </label>
-              <select
-                id="countries"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 outline-none"
-              >
-                <option class="male">Erkak</option>
-                <option class="female">Ayol</option>
-              </select>
-            </div>
           </div>
         </div>
 
@@ -142,7 +206,10 @@ const newUser = reactive({
           >
             Saqlash
           </button>
-          <button class="border bg-[#4D44B5] text-white p-2 px-4 rounded-full shadow-xl text-sm">
+          <button
+            @click="createUser"
+            class="border bg-[#4D44B5] text-white p-2 px-4 rounded-full shadow-xl text-sm"
+          >
             Qo'shish
           </button>
         </div>

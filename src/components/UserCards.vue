@@ -1,11 +1,13 @@
 <script setup>
-defineProps(['deleteFunc', 'data'])
+defineProps(['data', 'deleteFunc', 'setInfoId'])
 import { main_URL } from '@/service/axios'
 import { formatDays } from '@/helpers/formatDays'
+import Iconlik from './Iconlik.vue'
 </script>
 
 <template>
   <div
+    @click="() => setInfoId(data.id)"
     class="cursor-pointer hover:shadow-xl duration-300 bg-white rounded-xl py-5 relative text-center"
   >
     <button class="text-gray-500 text-lg absolute top-2 right-10">
@@ -26,24 +28,8 @@ import { formatDays } from '@/helpers/formatDays'
     <h3 class="text-[#303972] font-[600] text-md">{{ data.firstName }} {{ data.lastName }}</h3>
     <h4 class="text-[#4D44B5] text-sm">{{ data.info }}</h4>
     <div class="flex items-center justify-between px-5 mt-5">
-      <div class="flex items-center gap-2">
-        <i
-          class="bx bx-user w-8 h-8 bg-[#A098AE] rounded-full flex items-center justify-center text-white"
-        ></i>
-        <div class="text-start">
-          <h3 class="text-sm text-gray-500">Toifa</h3>
-          <h4 class="text-xs text-[#303972] font-bold">{{ data.type.name }}</h4>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <i
-          class="bx bx-calendar-alt w-8 h-8 bg-[#A098AE] rounded-full flex items-center justify-center text-white"
-        ></i>
-        <div class="text-start">
-          <h3 class="text-sm text-gray-500">Kuni</h3>
-          <h4 class="text-xs text-[#303972] font-bold">{{ formatDays(data.workDay) }}</h4>
-        </div>
-      </div>
+      <Iconlik icon="bx bx-user" title="Toifa" :value="data.type.name" />
+      <Iconlik icon="bx bx-calendar-alt" title="Kuni" :value="formatDays(data.workDay)" />
     </div>
   </div>
 </template>
