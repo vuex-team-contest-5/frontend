@@ -1,9 +1,11 @@
 <script setup>
 import Message from '@/components/Message.vue'
 import ChatAvatar from '@/components/ChatAvatar.vue'
-import { useChatsStore } from '../../stores/chats/chats'
-import { ref } from 'vue'
-const chats_store = useChatsStore()
+import Loading from '@/components/Loading.vue'
+import { useChatStore } from '@/stores/chat/chat'
+import { ref, onMounted } from 'vue'
+
+const chats_store = useChatStore()
 
 const file = ref(null)
 const selectedFileUrl = ref(null)
@@ -25,12 +27,21 @@ const getFile = (e) => {
     console.error('No file selected.')
   }
 }
+onMounted(async () => {
+  await chats_store.GET()
+})
 </script>
 
 <template>
   <div class="flex gap-5 p-5">
     <div class="w-80 max-h-[82vh] overflow-y-auto p-2">
-      <ChatAvatar v-for="el in 5" />
+      <Loading v-if="chats_store.LOAD" />
+      <div v-else class="">
+        <h3 v-if="!chats_store.DATA.length" class="text-xl w-full text-center py-20 text-gray-400">
+          Hali chat yo'q 🤷‍♂️
+        </h3>
+        <ChatAvatar v-for="el in chats_store.DATA" />
+      </div>
     </div>
     <div class="w-2/3 h-[80vh]">
       <div class="bg-[#EAECF0] border border-[#4D44B5]/50 rounded-xl overflow-y-auto h-[70vh] p-5">
@@ -61,7 +72,7 @@ const getFile = (e) => {
         />
         <div class="absolute right-44 bottom-0">
           <div
-            class="absolute bottom-16 shadow-xl rounded-xl border border-[#4D44B5]/80 -right-0 bg-white w-64 h-64"
+            class="hidden absolute bottom-16 shadow-xl rounded-xl border border-[#4D44B5]/80 -right-0 bg-white w-64 h-64"
           ></div>
           <i class="bx bx-smile text-3xl text-[#4D44B5]"></i>
         </div>
