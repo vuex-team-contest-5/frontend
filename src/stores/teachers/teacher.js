@@ -12,6 +12,13 @@ export const useTeacherStore = defineStore('teacher', () => {
     load: true
   })
 
+  const GET = async () => {
+    const res = (await useTeacher.list(teachers.meta.limit, teachers.meta.currentPage)).data
+    teachers.data = res.data
+    teachers.meta = res.meta
+    teachers.load = false
+  }
+
   const CREATE = async (newData) => {
     await useTeacher.create(newData)
     await GET()
@@ -19,13 +26,9 @@ export const useTeacherStore = defineStore('teacher', () => {
 
   const UPDATE = async () => {}
 
-  const DELETE = async () => {}
-
-  const GET = async () => {
-    const res = (await useTeacher.list(teachers.meta.limit, teachers.meta.currentPage)).data
-    teachers.data = res.data
-    teachers.meta = res.meta
-    teachers.load = false
+  const DELETE = async (id, type) => {
+    await useProduct.delete(id)
+    await GET(type)
   }
 
   const GETONE = (id) => {

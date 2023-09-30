@@ -21,7 +21,6 @@ const toggleAddForm = () => (isAddForm.value = !isAddForm.value)
 const setDeleteId = (id = null) => (deleteId.value = id)
 const setInfoId = (id = null) => (infoId.value = id)
 const setEditId = (id = null) => (editId.value = id)
-
 const deleteFunc = () => {}
 
 onMounted(async () => {

@@ -12,6 +12,13 @@ export const useClientStore = defineStore('client', () => {
     load: true
   })
 
+  const GET = async () => {
+    const res = (await useClient.list(clients.meta.limit, clients.meta.currentPage)).data
+    clients.data = res.data
+    clients.meta = res.meta
+    clients.load = false
+  }
+
   const CREATE = async (newData) => {
     await useClient.create(newData)
     await GET()
@@ -19,13 +26,9 @@ export const useClientStore = defineStore('client', () => {
 
   const UPDATE = async () => {}
 
-  const DELETE = async () => {}
-
-  const GET = async () => {
-    const res = (await useClient.list(clients.meta.limit, clients.meta.currentPage)).data
-    clients.data = res.data
-    clients.meta = res.meta
-    clients.load = false
+  const DELETE = async (id, type) => {
+    await useProduct.delete(id)
+    await GET(type)
   }
 
   const GETONE = (id) => {

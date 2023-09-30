@@ -1,5 +1,63 @@
 <script setup>
 defineProps(['funcForm'])
+import { reactive, onMounted } from 'vue'
+import { useCategoryStore } from '@/stores/category/category'
+import { useProductStore } from '@/stores/product/product'
+import { toast } from 'vue3-toastify'
+
+const category_store = useCategoryStore()
+const product_store = useProductStore()
+
+const newData = reactive({
+  image: '',
+  name: '',
+  price: '',
+  brand: '',
+  info: '',
+  count: '',
+  type: 'equipment',
+  status: true,
+  categoryId: ''
+})
+
+const fileSelected = (e) => {
+  newData.image = e.target.files[0]
+}
+
+const createEquipment = async () => {
+  try {
+    for (let i in newData) {
+      console.log(newData[i])
+      if (!newData[i]) {
+        toast.error(`Formani to'liq to'ldiring`, { autoClose: 1000 })
+        return
+      }
+    }
+
+    const formData = new FormData()
+    formData.append('image', newData.image)
+    formData.append('name', newData.name)
+    formData.append('price', newData.price)
+    formData.append('brand', newData.brand)
+    formData.append('info', newData.info)
+    formData.append('count', newData.count)
+    formData.append('type', newData.type)
+    formData.append('status', newData.status)
+    formData.append('categoryId', newData.categoryId)
+
+    await product_store.CREATE(formData, 'equipment')
+    funcForm()
+    toast.success(`Muvaffaqiyatli tizimga kirdingiz`, { autoClose: 1000 })
+  } catch (error) {
+    console.log(error)
+    toast.error(`Xatolik`, { autoClose: 1000 })
+  }
+}
+
+onMounted(async () => {
+  await category_store.GET('equipment')
+  newData.categoryId = category_store.DATA[0].id
+})
 </script>
 
 <template>
@@ -25,6 +83,7 @@ defineProps(['funcForm'])
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="Maria"
               required
+              v-model="newData.name"
             />
           </div>
           <div class="w-1/2">
@@ -37,6 +96,7 @@ defineProps(['funcForm'])
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="130$"
               required
+              v-model="newData.price"
             />
           </div>
         </div>
@@ -51,6 +111,7 @@ defineProps(['funcForm'])
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="Nike"
               required
+              v-model="newData.brand"
             />
           </div>
           <div class="w-1/2">
@@ -60,8 +121,9 @@ defineProps(['funcForm'])
             <select
               id="countries"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 outline-none"
+              @change="(e) => (newData.categoryId = e.target.value)"
             >
-              <option value="I">Trinajor</option>
+              <option v-for="el in category_store.DATA" :value="el.id">{{ el.name }}</option>
             </select>
           </div>
         </div>
@@ -75,6 +137,7 @@ defineProps(['funcForm'])
               class="h-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
               placeholder="Qisqacha ma'lumot"
               required
+              v-model="newData.info"
             />
           </div>
           <div class="w-1/2">
@@ -84,7 +147,7 @@ defineProps(['funcForm'])
 
             <div class="flex items-center justify-center w-full">
               <label
-                for="dropzone-file"
+                for="file"
                 class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
               >
                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -96,7 +159,7 @@ defineProps(['funcForm'])
                     SVG, PNG, JPG or GIF (MAX. 1MB)
                   </p>
                 </div>
-                <input id="dropzone-file" type="file" class="hidden" />
+                <input id="file" type="file" class="hidden" @change="fileSelected" />
               </label>
             </div>
           </div>
@@ -109,6 +172,7 @@ defineProps(['funcForm'])
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
             placeholder="0"
             required
+            v-model="newData.count"
           />
         </div>
         <div class="flex items-center justify-end gap-5">
@@ -117,7 +181,10 @@ defineProps(['funcForm'])
           >
             Saqlash
           </button>
-          <button class="border bg-[#4D44B5] text-white p-2 px-4 rounded-full shadow-xl text-sm">
+          <button
+            @click="createEquipment"
+            class="border bg-[#4D44B5] text-white p-2 px-4 rounded-full shadow-xl text-sm"
+          >
             Qo'shish
           </button>
         </div>

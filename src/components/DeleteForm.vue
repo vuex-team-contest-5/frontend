@@ -23,14 +23,12 @@ defineProps(['setDeleteId', 'deleteFunc'])
         <div class="flex justify-center items-center space-x-4">
           <button
             @click="() => setDeleteId()"
-            data-modal-toggle="deleteModal"
-            type="button"
             class="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-[#4D44B5]/80 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10"
           >
             Yo'q, hazillashdim
           </button>
           <button
-            type="submit"
+            @click="deleteFunc"
             class="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300"
           >
             Ha, albatta
