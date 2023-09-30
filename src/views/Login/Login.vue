@@ -8,6 +8,7 @@ import { useAuthStore } from '../../stores/auth/auth'
 const auth_store = useAuthStore()
 
 const user = reactive({
+  role: 'client',
   email: '',
   phoneNumber: ''
 })
@@ -36,10 +37,22 @@ const useLogin = () => {
         <img src="@/assets/img/hi.png" class="" alt="" />
         <h3 class="text-[30px] font-bold">Welcome back!</h3>
         <p class="text-[16px] font-[400] mb-5">Please login to access your account.</p>
+
         <div class="mb-5">
-          <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900"
-            >G-mail</label
+          <label for="role" class="block mb-2 text-sm font-medium text-gray-900"> Role </label>
+          <select
+            v-model="user.role"
+            name="role"
+            id="role"
+            class="bg-[#EAEAEA] border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5 px-4 shadow"
           >
+            <option value="client">Client</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <div class="mb-5">
+          <label for="email" class="block mb-2 text-sm font-medium text-gray-900"> G-mail </label>
           <input
             type="email"
             id="email"
@@ -50,7 +63,7 @@ const useLogin = () => {
           />
         </div>
         <div class="mb-5">
-          <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">
+          <label for="password" class="block mb-2 text-sm font-medium text-gray-900">
             Phone Number
           </label>
           <input
