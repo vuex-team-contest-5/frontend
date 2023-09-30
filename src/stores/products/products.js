@@ -1,9 +1,9 @@
 import { ref, reactive, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { useEquipments } from '@/service/equipments'
+import { useProducts } from '@/service/products'
 
-export const useEquipmentsStore = defineStore('equipments', () => {
-  const equipments = reactive({
+export const useProductsStore = defineStore('products', () => {
+  const products = reactive({
     data: [
       {
         id: 1,
@@ -28,7 +28,7 @@ export const useEquipmentsStore = defineStore('equipments', () => {
   })
 
   const CREATE = (newData) => {
-    // equipments.data.push(newData)
+    // products.data.push(newData)
   }
 
   const UPDATE = async () => {}
@@ -36,16 +36,16 @@ export const useEquipmentsStore = defineStore('equipments', () => {
   const DELETE = async () => {}
 
   const GET = async () => {
-    console.log(equipments.data)
-    // equipments.data = (await useTeacher.list()).data
-    // console.log(equipments.data)
-    // equipments.load = false
+    console.log(products.data)
+    // products.data = (await useTeacher.list()).data
+    // console.log(products.data)
+    // products.load = false
   }
 
   const GETONE = async () => {}
 
-  const DATA = computed(() => equipments.data)
-  const LOAD = computed(() => equipments.load)
+  const DATA = computed(() => products.data)
+  const LOAD = computed(() => products.load)
 
   return { CREATE, UPDATE, DELETE, GET, GETONE, DATA, LOAD }
 })

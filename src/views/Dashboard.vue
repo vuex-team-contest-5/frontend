@@ -13,6 +13,7 @@ const user = ref()
 
 onMounted(async () => {
   user.value = (await auth_store.GET_USER_INFO()).data
+  user.value.role = auth_store.GET_ROLE
 })
 </script>
 
